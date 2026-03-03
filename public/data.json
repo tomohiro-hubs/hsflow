@@ -1,4 +1,4 @@
-{
+﻿{
   "meta": {
     "version": "1.0.0",
     "lastUpdated": "2026-02-16T11:00:00Z",
@@ -7,7 +7,7 @@
   "nodes": [
     {
       "id": "N-000",
-      "title": "H-EE 契約",
+      "title": "HS-EE 契約",
       "description": "起点（HとEEの契約）",
       "role": "",
       "category": "contract",
@@ -114,7 +114,7 @@
     },
     {
       "id": "N-005",
-      "title": "建築リサイクル届",
+      "title": "建設リサイクル届",
       "description": "建リサ",
       "role": "",
       "category": "legal",
@@ -992,7 +992,7 @@
     },
     {
       "id": "N-030",
-      "title": "電力名義変更 EE-H",
+      "title": "電力名義変更 EE-HS",
       "description": "図下段",
       "role": "",
       "category": "power",
@@ -1056,7 +1056,7 @@
     },
     {
       "id": "N-040",
-      "title": "スマートロガー SIM手配（スマエナに依頼）（引渡し2か月前〜OK）",
+      "title": "スマートロガー SIM手配（SmartEに依頼）（引渡し2か月前〜OK）",
       "description": "引渡し2か月前ルールが重要",
       "role": "",
       "category": "communication",
@@ -1380,7 +1380,7 @@
     },
     {
       "id": "N-062",
-      "title": "スマエナへ QB鍵送付",
+      "title": "SmartEへ QB鍵送付",
       "description": "QB鍵の送付",
       "role": "",
       "category": "communication",
@@ -1400,7 +1400,7 @@
     },
     {
       "id": "N-070",
-      "title": "スマエナに FusionSolar 設定依頼",
+      "title": "SmartEに FusionSolar 設定依頼",
       "description": "FusionSolar設定",
       "role": "",
       "category": "communication",
@@ -1442,7 +1442,7 @@
     },
     {
       "id": "N-072",
-      "title": "スマエナと カメラ設定微調整",
+      "title": "SmartEと カメラ設定微調整",
       "description": "設定微調整",
       "role": "",
       "category": "communication",
@@ -2480,3 +2480,6 @@
   ],
   "groups": []
 }
+
+
+

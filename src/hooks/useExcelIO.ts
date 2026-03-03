@@ -18,6 +18,8 @@ export const useExcelIO = ({
     memoMap, setMemoMap,
     projectName, setProjectName,
     updateTimestamp,
+    updateImportTimestamp,
+    updateExportTimestamp,
 }: {
     nodes: Node[];
     statusMap: StatusMap;
@@ -31,6 +33,8 @@ export const useExcelIO = ({
     projectName: string;
     setProjectName: (name: string) => void;
     updateTimestamp: () => void;
+    updateImportTimestamp: () => void;
+    updateExportTimestamp: () => void;
 }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -44,6 +48,7 @@ export const useExcelIO = ({
             memoMap,
             projectName
         );
+        updateExportTimestamp();
     };
 
     // Excelインポート
@@ -76,6 +81,7 @@ export const useExcelIO = ({
                 setProjectName(newProject);
                 localStorage.setItem('heliosflow_project', newProject);
             }
+            updateImportTimestamp();
             updateTimestamp();
             alert('インポートが完了しました');
         } catch (err: any) {

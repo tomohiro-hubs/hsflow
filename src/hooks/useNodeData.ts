@@ -34,12 +34,36 @@ export const useNodeData = () => {
         return localStorage.getItem('heliosflow_updated') || '';
     });
 
+    // インポート日管理
+    const [lastImported, setLastImported] = useState(() => {
+        return localStorage.getItem('heliosflow_imported') || '';
+    });
+
+    // エクスポート日管理
+    const [lastExported, setLastExported] = useState(() => {
+        return localStorage.getItem('heliosflow_exported') || '';
+    });
+
     // 更新日タイムスタンプを更新する
     const updateTimestamp = () => {
         const now = new Date();
         const ts = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
         setLastUpdated(ts);
         localStorage.setItem('heliosflow_updated', ts);
+    };
+
+    const updateImportTimestamp = () => {
+        const now = new Date();
+        const ts = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        setLastImported(ts);
+        localStorage.setItem('heliosflow_imported', ts);
+    };
+
+    const updateExportTimestamp = () => {
+        const now = new Date();
+        const ts = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        setLastExported(ts);
+        localStorage.setItem('heliosflow_exported', ts);
     };
 
     // --- ハンドラ ---
@@ -98,6 +122,10 @@ export const useNodeData = () => {
         handleProjectNameChange('');
         setLastUpdated('');
         localStorage.removeItem('heliosflow_updated');
+        setLastImported('');
+        localStorage.removeItem('heliosflow_imported');
+        setLastExported('');
+        localStorage.removeItem('heliosflow_exported');
     };
 
     return {
@@ -108,6 +136,8 @@ export const useNodeData = () => {
         memoMap, setMemoMap,
         projectName,
         lastUpdated,
+        lastImported,
+        lastExported,
 
         // ハンドラ
         handleStatusChange,
@@ -116,6 +146,8 @@ export const useNodeData = () => {
         handleMemoChange,
         handleProjectNameChange,
         updateTimestamp,
+        updateImportTimestamp,
+        updateExportTimestamp,
         clearAllData,
     };
 };

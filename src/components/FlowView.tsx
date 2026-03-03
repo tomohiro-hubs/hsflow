@@ -130,13 +130,18 @@ const FlowView = ({
                             <div className="leading-relaxed opacity-95 text-[11px]">
                                 {(() => {
                                     const data = node.data as any;
-                                    const [y, m, d] = (data.dueDate as string).split('-').map(Number);
-                                    const due = new Date(y, m - 1, d);
+                                    const dateStr = data.dueDate as string;
+                                    const [y, m, d] = dateStr.split('-').map(Number);
+                                    const date = new Date(y, m - 1, d);
+                                    const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
+                                    const day = dayNames[date.getDay()];
+                                    const formattedDate = `${y}/${String(m).padStart(2, '0')}/${String(d).padStart(2, '0')} (${day})`;
+
                                     const today = new Date();
                                     today.setHours(0, 0, 0, 0);
-                                    const diff = today.getTime() - due.getTime();
+                                    const diff = today.getTime() - date.getTime();
                                     const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-                                    return `期日設定日から${days}日遅延しています。確認してください。`;
+                                    return `${formattedDate} から ${days}日遅延しています。確認してください。`;
                                 })()}
                             </div>
                         </div>
@@ -163,11 +168,20 @@ const FlowView = ({
                                     <span className="truncate">{data.label}</span>
                                 </div>
                                 <div className="leading-relaxed opacity-95 font-medium">
-                                    {diffDays === 0 ? (
-                                        <>本日が期限の {data.dueDate} です。<br />確認してください。</>
-                                    ) : (
-                                        <>期限まであと{diffDays}日の {data.dueDate} です。<br />確認してください。</>
-                                    )}
+                                    {(() => {
+                                        const dateStr = data.dueDate as string;
+                                        const [y, m, d] = dateStr.split('-').map(Number);
+                                        const date = new Date(y, m - 1, d);
+                                        const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
+                                        const day = dayNames[date.getDay()];
+                                        const formattedDate = `${y}/${String(m).padStart(2, '0')}/${String(d).padStart(2, '0')} (${day})`;
+
+                                        return diffDays === 0 ? (
+                                            <>本日が期限の {formattedDate} です。<br />確認してください。</>
+                                        ) : (
+                                            <>期限まであと{diffDays}日の {formattedDate} です。<br />確認してください。</>
+                                        );
+                                    })()}
                                 </div>
                             </div>
                         );

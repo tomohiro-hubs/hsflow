@@ -2,37 +2,62 @@ import { memo, useMemo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import { NodeData } from '@/types';
 import { CATEGORY_COLORS, CATEGORY_LABELS, NODE_STATUSES } from '@/constants';
-import { Star, AlertTriangle } from 'lucide-react';
+import { Star, AlertTriangle, MessageSquare, Calendar, CheckCircle } from 'lucide-react';
 
 const CustomNode = memo(({ data, id }: { data: NodeData & { isFav?: boolean; nodeStatus?: string, assignee?: string, dueDate?: string, memo?: string }, id: string }) => {
     const color = CATEGORY_COLORS[data.category] || CATEGORY_COLORS.default;
 
-    const isGrayed = data.nodeStatus === 'completed' || data.nodeStatus === 'notApplicable';
+    const isCompleted = data.nodeStatus === 'completed';
+    const isGrayed = data.nodeStatus === 'notApplicable';
     const statusKey = data.nodeStatus || 'pending';
     const status = NODE_STATUSES[statusKey] || NODE_STATUSES.pending;
     const isInProgress = statusKey === 'inProgress';
 
     const isOverdue = useMemo(() => {
-        if (!data.dueDate || isGrayed) return false;
+        if (!data.dueDate || isGrayed || isCompleted) return false;
         const today = new Date();
-        today.setHours(0, 0, 0, 0); // 今日の0時
+        today.setHours(0, 0, 0, 0);
         const [y, m, d] = data.dueDate.split('-').map(Number);
         const due = new Date(y, m - 1, d);
         return due < today;
-    }, [data.dueDate, isGrayed]);
+    }, [data.dueDate, isGrayed, isCompleted]);
+
+    const isApproaching = useMemo(() => {
+        if (!data.dueDate || isGrayed || isOverdue || isCompleted) return false;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const [y, m, d] = data.dueDate.split('-').map(Number);
+        const due = new Date(y, m - 1, d);
+        const timeDiff = due.getTime() - today.getTime();
+        const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        return diffDays >= 0 && diffDays <= 3;
+    }, [data.dueDate, isGrayed, isOverdue, isCompleted]);
 
     return (
         <div
-            className={`rounded-xl shadow-md border-2 border-transparent hover:shadow-lg transition-all w-[200px] group relative ${isGrayed ? 'opacity-40' : ''} ${isInProgress ? 'animate-gradient-bg' : ''}`}
+            className={`rounded-xl shadow-md border-2 border-transparent hover:shadow-lg transition-all w-[200px] group relative ${(isGrayed || isCompleted) ? 'opacity-40' : ''} ${isInProgress ? 'animate-gradient-bg' : ''}`}
             style={{
-                borderColor: isOverdue ? '#ef4444' : (isGrayed ? '#cbd5e1' : color), // 期限切れ時は赤枠にオーバーライドするか、あるいはバッジだけにするか。今回はバッジのみにする指示だが、枠も赤くすると分かりやすいかも。指示は「右上に警告」なのでバッジ優先。
+                borderColor: isOverdue ? '#ef4444' : (isApproaching ? '#f59e0b' : (isCompleted ? '#cbd5e1' : (isGrayed ? '#cbd5e1' : color))),
                 borderWidth: (id === 'N-011' || id === 'N-021' || id === 'N-051' || id === 'N-058') ? '4px' : '2px',
                 background: isInProgress ? 'var(--hf-progress-bg)' : 'var(--hf-node-bg)',
-                filter: isGrayed ? 'grayscale(1)' : undefined,
+                filter: (isGrayed || isCompleted) ? 'grayscale(1)' : undefined,
                 color: 'var(--hf-text-primary)',
                 minHeight: '100px'
             }}
         >
+            {/* 期限切れ点滅背景 */}
+            {isOverdue && !isGrayed && <div className="absolute inset-0 rounded-xl animate-overdue-blink pointer-events-none z-0" />}
+
+            {/* 期限間近（確認）点滅背景 */}
+            {isApproaching && !isGrayed && <div className="absolute inset-0 rounded-xl animate-warning-blink pointer-events-none z-0" />}
+
+            {/* 完了時：大きな透かしチェックマーク */}
+            {isCompleted && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden rounded-xl">
+                    <CheckCircle className="text-green-500 opacity-60" size={110} strokeWidth={2} style={{ transform: 'rotate(-5deg)' }} />
+                </div>
+            )}
+
             {/* ... Handles ... */}
             {/* Top */}<Handle type="target" position={Position.Top} id="t-top" className="!bg-slate-500 !w-2 !h-2" /><Handle type="source" position={Position.Top} id="s-top" className="!bg-slate-500 !w-2 !h-2" />
             {/* Left */}<Handle type="target" position={Position.Left} id="t-left" className="!bg-slate-500 !w-2 !h-2" style={{ top: '40px' }} /><Handle type="source" position={Position.Left} id="s-left" className="!bg-slate-500 !w-2 !h-2" style={{ top: '40px' }} />
@@ -48,14 +73,19 @@ const CustomNode = memo(({ data, id }: { data: NodeData & { isFav?: boolean; nod
                 </div>
             )}
 
-            {/* ID + お気に入り（右上） */}
-            <div className="absolute -top-3 -right-3 flex items-center gap-1">
+            {/* ID + お気に入り + メモアイコン（右上） */}
+            <div className="absolute -top-3 -right-3 flex items-center gap-1.5">
+                {data.memo && (
+                    <div className="bg-blue-500 text-white rounded-full p-1 shadow-sm border border-white" title={data.memo}>
+                        <MessageSquare size={10} strokeWidth={3} />
+                    </div>
+                )}
                 <span className="text-[9px] font-mono px-1.5 py-0.5 rounded shadow-sm"
                     style={{ color: 'var(--hf-text-muted)', background: 'var(--hf-bg-card)', border: '1px solid var(--hf-border-light)' }}>
                     {id}
                 </span>
                 <div
-                    className="rounded-full p-1 opacity-0 group-hover:opacity-100 transition shadow-sm cursor-pointer z-10"
+                    className="rounded-full p-1 transition shadow-sm cursor-pointer z-10"
                     style={{ background: 'var(--hf-bg-card)', border: '1px solid var(--hf-border-light)' }}
                     onClick={(e) => {
                         e.stopPropagation();
@@ -63,7 +93,7 @@ const CustomNode = memo(({ data, id }: { data: NodeData & { isFav?: boolean; nod
                         window.dispatchEvent(event);
                     }}
                 >
-                    <Star size={14} className={data.isFav ? "fill-amber-400 text-amber-400" : "text-slate-400"} />
+                    <Star size={17} className={data.isFav ? "fill-amber-400 text-amber-400" : "text-slate-400"} />
                 </div>
             </div>
 
@@ -77,7 +107,7 @@ const CustomNode = memo(({ data, id }: { data: NodeData & { isFav?: boolean; nod
             )}
 
             {/* コンテンツ */}
-            <div className="p-3 pb-8"> {/* pb-8で下部にスペースを確保 */}
+            <div className="p-3 pb-8 relative z-10"> {/* pb-8で下部にスペースを確保 */}
                 <div className="flex items-center gap-2 mb-1">
                     <div className="w-2 h-2 rounded-full" style={{ background: color }} />
                     <span className="text-[10px] font-bold uppercase tracking-wider"
@@ -85,10 +115,33 @@ const CustomNode = memo(({ data, id }: { data: NodeData & { isFav?: boolean; nod
                         {CATEGORY_LABELS[data.category] || data.category}
                     </span>
                 </div>
-                <div className="text-sm font-bold leading-tight"
+                <div className="text-sm font-bold leading-tight mb-2"
                     style={{ color: 'var(--hf-text-primary)' }}>
                     {data.label}
                 </div>
+
+                {data.dueDate && (
+                    <div className="flex items-center gap-1.5 opacity-90 transition-colors"
+                        style={{ color: isOverdue ? '#f87171' : (isApproaching ? '#f59e0b' : 'var(--hf-text-secondary)') }}>
+                        <Calendar size={11} className="shrink-0" />
+                        <span className="text-[10px] font-mono font-bold tracking-tight">
+                            {data.dueDate.replace(/-/g, '/')}
+                            {(() => {
+                                try {
+                                    const [y, m, d] = data.dueDate.split('-').map(Number);
+                                    const date = new Date(y, m - 1, d);
+                                    const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
+                                    const day = dayNames[date.getDay()];
+                                    return (
+                                        <span className="ml-0.5 text-[8px] opacity-80" style={{ verticalAlign: 'middle' }}>
+                                            ({day})
+                                        </span>
+                                    );
+                                } catch { return null; }
+                            })()}
+                        </span>
+                    </div>
+                )}
 
 
 

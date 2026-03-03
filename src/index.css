@@ -23,8 +23,12 @@
   --hf-node-bg: linear-gradient(135deg, rgba(30, 37, 64, 0.95), rgba(20, 25, 40, 0.98));
   --hf-minimap-mask: rgba(12, 17, 29, 0.7);
 
-  /* 進行中アニメーション用（ダーク）: 薄めの黄色（アンバー）とカード背景のミックス */
-  --hf-progress-bg: linear-gradient(270deg, rgba(251, 191, 36, 0.15), rgba(30, 37, 64, 0.95), rgba(251, 191, 36, 0.15));
+  /* 進行中アニメーション用（ダーク）: 少し濃いめの青色とカード背景のミックス */
+  --hf-progress-bg: linear-gradient(270deg, rgba(99, 102, 241, 0.35), rgba(30, 37, 64, 0.8), rgba(99, 102, 241, 0.35));
+  /* 期限切れアニメーション用: 赤色 (30%) */
+  --hf-overdue-bg: rgba(239, 68, 68, 0.3);
+  /* 期限間近（確認）アニメーション用: 黄色 (30%) */
+  --hf-warning-bg: rgba(251, 191, 36, 0.3);
 }
 
 [data-theme="light"] {
@@ -55,8 +59,12 @@
   --hf-node-bg: #ffffff;
   --hf-minimap-mask: rgba(248, 250, 252, 0.7);
 
-  /* 進行中アニメーション用（ライト）: 薄い黄色（アンバー） */
-  --hf-progress-bg: linear-gradient(270deg, rgba(251, 191, 36, 0.15), #ffffff, rgba(251, 191, 36, 0.15));
+  /* 進行中アニメーション用（ライト）: 少し濃いめの青色 */
+  --hf-progress-bg: linear-gradient(270deg, rgba(99, 102, 241, 0.25), rgba(99, 102, 241, 0.05), rgba(99, 102, 241, 0.25));
+  /* 期限切れアニメーション用（ライトも共通） */
+  --hf-overdue-bg: rgba(239, 68, 68, 0.3);
+  /* 期限間近（確認）アニメーション用（ライトも共通） */
+  --hf-warning-bg: rgba(251, 191, 36, 0.3);
 }
 
 body {
@@ -117,4 +125,42 @@ body {
 .animate-gradient-bg {
   background-size: 200% 200% !important;
   animation: gradient-move 3s ease infinite;
+}
+
+/* 期限切れ用点滅アニメーション */
+@keyframes pulse-red {
+  0% {
+    background-color: transparent;
+  }
+
+  50% {
+    background-color: var(--hf-overdue-bg);
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+.animate-overdue-blink {
+  animation: pulse-red 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* 期限間近（確認）用点滅アニメーション */
+@keyframes pulse-yellow {
+  0% {
+    background-color: transparent;
+  }
+
+  50% {
+    background-color: var(--hf-warning-bg);
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+.animate-warning-blink {
+  animation: pulse-yellow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

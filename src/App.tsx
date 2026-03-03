@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useNodesState, useEdgesState, ReactFlowProvider, Node, Edge } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { HashRouter, Routes, Route } from 'react-router-dom';
-import { Search, List, LayoutDashboard, Info, Star, Download, Upload, Loader2, Moon, Sun, RotateCcw, Filter, BookOpen } from 'lucide-react';
+import { Search, List, LayoutDashboard, Info, Star, Download, Upload, Loader2, Moon, Sun, RotateCcw, Filter, BookOpen, FileDown } from 'lucide-react';
 
 import { AppData, NodeData } from '@/types';
 import { CATEGORY_COLORS, CATEGORY_LABELS } from '@/constants';
@@ -50,13 +50,13 @@ const App = () => {
         dueDateMap, setDueDateMap,
         memoMap, setMemoMap,
         projectName,
-        lastUpdated,
+        lastUpdated, lastImported, lastExported,
         handleStatusChange,
         handleAssigneeChange,
         handleDueDateChange,
         handleMemoChange,
         handleProjectNameChange,
-        updateTimestamp,
+        updateTimestamp, updateImportTimestamp, updateExportTimestamp,
         clearAllData,
     } = useNodeData();
 
@@ -70,6 +70,8 @@ const App = () => {
         projectName,
         setProjectName: handleProjectNameChange,
         updateTimestamp,
+        updateImportTimestamp,
+        updateExportTimestamp,
     });
 
     // --- データ読み込み ---
@@ -219,11 +221,25 @@ const App = () => {
                                 border: '1px solid var(--hf-border-light)',
                             }}
                         />
-                        {lastUpdated && (
-                            <span className="text-[10px] hidden sm:inline whitespace-nowrap" style={{ color: 'var(--hf-text-muted)' }}>
-                                更新: {lastUpdated}
-                            </span>
-                        )}
+                        <div className="hidden lg:flex flex-col gap-0 px-2 border-l border-white/5">
+                            {lastUpdated && (
+                                <span className="text-xs whitespace-nowrap" style={{ color: 'var(--hf-text-muted)' }}>
+                                    更新: {lastUpdated}
+                                </span>
+                            )}
+                            <div className="flex gap-2">
+                                {lastImported && (
+                                    <span className="text-[9px] opacity-60 whitespace-nowrap" style={{ color: 'var(--hf-text-muted)' }}>
+                                        インポート: {lastImported}
+                                    </span>
+                                )}
+                                {lastExported && (
+                                    <span className="text-[9px] opacity-60 whitespace-nowrap" style={{ color: 'var(--hf-text-muted)' }}>
+                                        出力: {lastExported}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
                     {/* ナビゲーション */}
@@ -260,6 +276,16 @@ const App = () => {
                         </button>
                         <span className="text-[10px] hidden md:inline ml-1" style={{ color: 'var(--hf-text-secondary)' }}>（←新しくつくる場合は初期化）</span>
                         <div className="w-px h-4 mx-1" style={{ background: 'var(--hf-border-light)' }} />
+                        <a
+                            href={`${import.meta.env.BASE_URL}format.xlsx`}
+                            download="format.xlsx"
+                            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-all duration-200 hover:bg-slate-100/10"
+                            style={{ color: 'var(--hf-text-secondary)', border: '1px solid var(--hf-border-light)' }}
+                            title="Excelフォーマットをダウンロード"
+                        >
+                            <FileDown size={13} />
+                            <span className="hidden sm:inline">フォーマット</span>
+                        </a>
                         <input type="file" ref={fileInputRef} accept=".xlsx,.xls" onChange={handleImport} className="hidden" />
                         <button
                             onClick={() => fileInputRef.current?.click()}
