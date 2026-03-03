@@ -1,7 +1,7 @@
 import { memo, useMemo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import { NodeData } from '@/types';
-import { CATEGORY_COLORS, CATEGORY_LABELS, NODE_STATUSES } from '@/constants';
+import { CATEGORY_COLORS, CATEGORY_LABELS, NODE_STATUSES, ASSIGNEE_COLORS } from '@/constants';
 import { Star, AlertTriangle, MessageSquare, Calendar, CheckCircle } from 'lucide-react';
 
 const CustomNode = memo(({ data, id }: { data: NodeData & { isFav?: boolean; nodeStatus?: string, assignee?: string, dueDate?: string, memo?: string }, id: string }) => {
@@ -159,16 +159,6 @@ const CustomNode = memo(({ data, id }: { data: NodeData & { isFav?: boolean; nod
                 {data.assignee && (
                     <div className="absolute bottom-3 right-3 flex flex-wrap gap-1 justify-end max-w-[120px] pointer-events-none">
                         {(() => {
-                            // 担当者ごとの色定義
-                            const ASSIGNEE_COLORS: Record<string, string> = {
-                                '宮崎': '#d97706', // amber-600
-                                '若林': '#db2777', // pink-600
-                                '堀': '#2563eb',   // blue-600
-                                '掘': '#2563eb',   // blue-600 (Typo対応)
-                                '猪又': '#9333ea', // purple-600
-                                'その他': '#475569', // slate-600
-                            };
-
                             return data.assignee.split(',').filter(Boolean).map((name, i) => {
                                 const trimName = name.trim();
                                 const bgColor = ASSIGNEE_COLORS[trimName] || ASSIGNEE_COLORS['その他'];

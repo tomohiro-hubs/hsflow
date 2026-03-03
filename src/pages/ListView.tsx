@@ -1,11 +1,9 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
-import { Star, ArrowUpDown, Search, Check, ChevronDown } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Star, ArrowUpDown, Search } from 'lucide-react';
 import { Node as FlowNode } from '@xyflow/react';
 import { NodeData } from '@/types';
 import { CATEGORY_LABELS, CATEGORY_COLORS, NODE_STATUSES } from '@/constants';
 import { StatusMap, AssigneeMap, DueDateMap, MemoMap } from '@/utils/excelStatus';
-
-const ASSIGNEES = ['宮崎', '若林', '猪又', '堀', 'その他'];
 
 type ListViewProps = {
     nodes: FlowNode[];
@@ -20,82 +18,7 @@ type ListViewProps = {
     onMemoChange: (nodeId: string, memo: string) => void;
 };
 
-// 複数選択ドロップダウンコンポーネント
-const MultiSelectAssignee = ({
-    selected,
-    onChange
-}: {
-    selected: string, // カンマ区切りの文字列
-    onChange: (val: string) => void
-}) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    const selectedList = selected ? selected.split(',').filter(Boolean) : [];
-
-    // クリック外で閉じる
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (containerRef.current && !containerRef.current.contains(event.target as globalThis.Node)) {
-                setIsOpen(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-
-    const toggleAssignee = (name: string) => {
-        let newList;
-        if (selectedList.includes(name)) {
-            newList = selectedList.filter(s => s !== name);
-        } else {
-            newList = [...selectedList, name];
-        }
-        onChange(newList.join(','));
-    };
-
-    return (
-        <div className="relative w-32" ref={containerRef}>
-            <div
-                onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center justify-between px-2 py-1.5 text-xs bg-transparent border-b border-gray-600 cursor-pointer hover:bg-white/5 transition-colors"
-                style={{ color: 'var(--hf-text-primary)' }}
-            >
-                <div className="truncate mr-1 h-4">
-                    {selectedList.length > 0 ? selectedList.join(', ') : <span className="text-gray-500">-</span>}
-                </div>
-                <ChevronDown size={12} className="opacity-50" />
-            </div>
-
-            {isOpen && (
-                <div
-                    className="absolute top-full left-0 z-50 w-full mt-1 rounded-md shadow-lg overflow-hidden"
-                    style={{
-                        background: 'var(--hf-bg-elevated)',
-                        border: '1px solid var(--hf-border)'
-                    }}
-                >
-                    {ASSIGNEES.map(name => {
-                        const isSelected = selectedList.includes(name);
-                        return (
-                            <div
-                                key={name}
-                                onClick={() => toggleAssignee(name)}
-                                className="flex items-center px-3 py-2 text-xs cursor-pointer hover:bg-white/10"
-                                style={{ color: 'var(--hf-text-primary)' }}
-                            >
-                                <div className={`w-3 h-3 border rounded mr-2 flex items-center justify-center ${isSelected ? 'bg-indigo-500 border-indigo-500' : 'border-gray-500'}`}>
-                                    {isSelected && <Check size={10} className="text-white" />}
-                                </div>
-                                {name}
-                            </div>
-                        );
-                    })}
-                </div>
-            )}
-        </div>
-    );
-};
+import MultiSelectAssignee from '@/components/MultiSelectAssignee';
 
 const ListView = ({ nodes, favorites, statusMap, assigneeMap, onAssigneeChange, dueDateMap, onDueDateChange, onStatusChange, memoMap, onMemoChange }: ListViewProps) => {
     const [searchTerm, setSearchTerm] = useState('');

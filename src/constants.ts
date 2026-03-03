@@ -48,3 +48,12 @@ export const MIN_ZOOM = 0.1;
 
 // 担当者リスト
 export const ASSIGNEES = ['宮崎', '若林', '猪又', '堀', 'その他'];
+
+export const ASSIGNEE_COLORS: Record<string, string> = {
+    '宮崎': '#d97706', // amber-600
+    '若林': '#db2777', // pink-600
+    '堀': '#2563eb',   // blue-600
+    '掘': '#2563eb',   // blue-600 (Typo対応)
+    '猪又': '#9333ea', // purple-600
+    'その他': '#475569', // slate-600
+};
