@@ -17,7 +17,8 @@ export const analyzeProjectStatus = async (
         const id = n.id;
         const data = n.data as any;
         const title = data.label || '無題のタスク';
-        const status = statusMap[id] || '未設定';
+        const statusKey = statusMap[id] || 'pending';
+        const status = statusKey === 'pending' ? '未着手' : statusKey;
         const assignee = assigneeMap[id] || '未定';
         const dueDate = dueDateMap[id] || '未設定';
         const memo = memoMap[id] || '';
@@ -32,17 +33,17 @@ export const analyzeProjectStatus = async (
     const todayStr = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
 
     const promptValue = `今日は${todayStr}です。
-以下のプロジェクト「${projectName || 'Helios Flow 案件'}」の現在のタスク状況を整理し、客観的な事実ベースで簡潔にまとめてください。
+以下のプロジェクト「${projectName || 'Helios Flow 案件'}」の現在のタスク状況を整理し、客観的な事実ベースで箇条書きを中心とした簡潔な報告書を作成してください。
 
 【解析の特別ルール】
 各タスクの「説明」欄を確認してください。「〇ヶ月前」「〇日前」といった期限に関する具体的な条件が記載されている場合、今日の日付（${todayStr}）と、入力されている「期日」「状態」を照らし合わせてチェックしてください。
-もし説明にある期限を過ぎている、または守られていない可能性がある場合は、最優先で「要注意タスク」として抽出し、理由とともに報告してください。
+もし説明にある期限を過ぎている、または守られていない可能性がある場合は、最優先で「【要注意タスク】」として報告してください。
 
-【報告内容】
-1. 【最優先・要注意タスク】 期限切れ、または説明欄の条件（「〇日前までに」など）に照らして遅延の恐れがあるタスク
-2. 【現状の進捗状況】 各担当者のメモから読み取れる、現在の具体的な進捗や課題の整理
-
-推測や個人的なアドバイスは不要です。視覚的に非常に読みやすいMarkdown形式で出力してください。
+【報告の構成】
+- 「### 【最優先・要注意タスク】」という見出し（必ず行頭に###をつける）を立て、期限切れや条件未達成のタスクをリストアップしてください。
+- 「### 【現状の進捗と課題】」という見出し（必ず行頭に###をつける）を立て、全体の進捗や課題を整理してください。
+- 推測や個人的なアドバイス、締めの挨拶などは一切不要です。
+- 見出し（###）以外には無駄な太字（**）などの記号を多用せず、スッキリと読みやすい文書にしてください。
 
 【タスク一覧】
 ${taskList || '現在進行中のタスクはありません。'}`;

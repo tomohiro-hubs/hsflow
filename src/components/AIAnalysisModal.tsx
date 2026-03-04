@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { Bot, X, Sparkles } from 'lucide-react';
 import { Node } from '@xyflow/react';
 import { analyzeProjectStatus } from '@/utils/ai';
@@ -92,30 +93,46 @@ const AIAnalysisModal = ({ isOpen, onClose, nodes, statusMap, assigneeMap, dueDa
                             </button>
                         </div>
                     ) : (
-                        // 返ってきたマークダウン風のテキストをきれいに表示
-                        <div className="prose prose-sm max-w-none text-[14px] leading-relaxed whitespace-pre-wrap select-text">
-                            {result}
+                        // 返ってきたマークダウンをきれいに表示
+                        <div className="prose prose-invert max-w-none text-[14px] leading-relaxed select-text ai-content">
+                            <ReactMarkdown
+                                components={{
+                                    h1: ({ node, ...props }) => <h3 className="text-base font-black mb-3 mt-4 text-slate-800 bg-slate-100/80 border-l-4 border-purple-500 pl-3 py-1 rounded-r-md" {...props} />,
+                                    h2: ({ node, ...props }) => <h3 className="text-base font-black mb-3 mt-4 text-slate-800 bg-slate-100/80 border-l-4 border-purple-500 pl-3 py-1 rounded-r-md" {...props} />,
+                                    h3: ({ node, ...props }) => <h3 className="text-base font-black mb-3 mt-4 text-slate-800 bg-slate-100/80 border-l-4 border-purple-500 pl-3 py-1 rounded-r-md" {...props} />,
+                                    ul: ({ node, ...props }) => <ul className="list-disc pl-5 space-y-2 mb-4" {...props} />,
+                                    strong: ({ node, ...props }) => <span className="font-bold text-purple-300" {...props} />,
+                                    p: ({ node, ...props }) => <p className="mb-3 last:mb-0" {...props} />,
+                                }}
+                            >
+                                {result}
+                            </ReactMarkdown>
                         </div>
                     )}
                 </div>
 
                 {/* フッター */}
                 {result && !loading && (
-                    <div className="p-4 border-t flex justify-end gap-2" style={{ borderColor: 'var(--hf-border)', background: 'var(--hf-bg-elevated)' }}>
-                        <button
-                            onClick={handleAnalyze}
-                            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-slate-100/10"
-                            style={{ color: 'var(--hf-text-secondary)' }}
-                        >
-                            <Sparkles size={14} /> 解析をやり直す
-                        </button>
-                        <button
-                            onClick={onClose}
-                            className="px-6 py-2 rounded-lg text-sm font-medium text-white transition-opacity hover:opacity-90 shadow-md"
-                            style={{ background: 'linear-gradient(135deg, #a855f7, #6366f1)' }}
-                        >
-                            閉じる
-                        </button>
+                    <div className="p-4 border-t flex items-center justify-between gap-4" style={{ borderColor: 'var(--hf-border)', background: 'var(--hf-bg-elevated)' }}>
+                        <div className="text-[11px]" style={{ color: 'var(--hf-text-secondary)' }}>
+                            ※AIは間違えることがあります。担当者は内容の確認と報告を必ず実施してください。
+                        </div>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={handleAnalyze}
+                                className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-slate-100/10"
+                                style={{ color: 'var(--hf-text-secondary)' }}
+                            >
+                                <Sparkles size={14} /> 解析をやり直す
+                            </button>
+                            <button
+                                onClick={onClose}
+                                className="px-6 py-2 rounded-lg text-sm font-medium text-white transition-opacity hover:opacity-90 shadow-md"
+                                style={{ background: 'linear-gradient(135deg, #a855f7, #6366f1)' }}
+                            >
+                                閉じる
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>
