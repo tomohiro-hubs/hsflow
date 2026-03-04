@@ -111,7 +111,7 @@ export const exportStatusToExcel = (
     // 案件名行
     const titleRow = ['案件名', projectName, '', '', '', '', ''];
     // 更新日行
-    const dateRow = ['更新日', new Date().toLocaleDateString('ja-JP'), '', '', '', '', ''];
+    const dateRow = ['更新日', new Date().toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }), '', '', '', '', ''];
     // 空行
     const emptyRow = ['', '', '', '', '', '', ''];
     // ヘッダー行
