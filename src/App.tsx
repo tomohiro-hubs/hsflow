@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNodesState, useEdgesState, ReactFlowProvider, Node, Edge } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Search, List, LayoutDashboard, Info, Star, Download, Upload, Loader2, Moon, Sun, RotateCcw, Filter, BookOpen, FileDown, Sparkles } from 'lucide-react';
 
 import { AppData, NodeData } from '@/types';
@@ -190,7 +190,7 @@ const App = () => {
     );
 
     return (
-        <HashRouter>
+        <BrowserRouter>
             <div className="h-screen w-screen flex flex-col overflow-hidden" style={{ background: 'var(--hf-bg-primary)' }}>
 
                 {/* ========== ヘッダー ========== */}
@@ -433,7 +433,7 @@ const App = () => {
                     />
                 </div>
             </div>
-        </HashRouter >
+        </BrowserRouter>
     );
 };
 
