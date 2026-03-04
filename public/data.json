@@ -1165,7 +1165,7 @@
     {
       "id": "N-052",
       "title": "竣工検査",
-      "description": "竣工検査",
+      "description": "竣工検査を実施する。検査の１か月前にHSに連絡を入れる",
       "role": "",
       "category": "inspection",
       "status": "active",
@@ -2480,6 +2480,3 @@
   ],
   "groups": []
 }
-
-
-

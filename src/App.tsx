@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useNodesState, useEdgesState, ReactFlowProvider, Node, Edge } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { HashRouter, Routes, Route } from 'react-router-dom';
-import { Search, List, LayoutDashboard, Info, Star, Download, Upload, Loader2, Moon, Sun, RotateCcw, Filter, BookOpen, FileDown } from 'lucide-react';
+import { Search, List, LayoutDashboard, Info, Star, Download, Upload, Loader2, Moon, Sun, RotateCcw, Filter, BookOpen, FileDown, Sparkles } from 'lucide-react';
 
 import { AppData, NodeData } from '@/types';
 import { CATEGORY_COLORS, CATEGORY_LABELS } from '@/constants';
@@ -16,6 +16,7 @@ import NodeDetailModal from '@/components/NodeDetailModal';
 import ListView from '@/pages/ListView';
 import AboutView from '@/pages/AboutView';
 import ManualView from '@/pages/ManualView';
+import AIAnalysisModal from '@/components/AIAnalysisModal';
 
 const App = () => {
     // --- ノード・エッジの基本状態 ---
@@ -30,6 +31,9 @@ const App = () => {
     });
     const [searchTerm, setSearchTerm] = useState('');
     const [activeCategory, setActiveCategory] = useState('all');
+
+    // --- AI解析モーダルの状態 ---
+    const [isAIModalOpen, setIsAIModalOpen] = useState(false);
 
     // --- テーマ管理 ---
     const [theme, setTheme] = useState(() => localStorage.getItem('helios_theme') || 'dark');
@@ -250,8 +254,18 @@ const App = () => {
                         <HeaderLink to="/manual" icon={<BookOpen size={14} />} label="使い方" />
                     </nav>
 
-                    {/* インポート / エクスポート / テーマ切り替え */}
+                    {/* インポート / エクスポート / AI解析 / テーマ切り替え */}
                     <div className="flex items-center gap-1.5">
+                        <button
+                            onClick={() => setIsAIModalOpen(true)}
+                            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-all duration-200 hover:brightness-110 shadow-sm"
+                            style={{ background: 'linear-gradient(135deg, #a855f7, #6366f1)', color: '#fff', border: 'none' }}
+                            title="AIで進捗を解析"
+                        >
+                            <Sparkles size={13} />
+                            <span className="hidden lg:inline">AI解析</span>
+                        </button>
+                        <div className="w-px h-4 mx-1" style={{ background: 'var(--hf-border-light)' }} />
                         <button
                             onClick={toggleTheme}
                             className="flex items-center justify-center w-8 h-8 rounded-md transition-all duration-200 hover:bg-slate-100/10"
@@ -405,6 +419,18 @@ const App = () => {
                             onToggleFav={handleToggleFav}
                         />
                     )}
+
+                    {/* AI解析モーダル */}
+                    <AIAnalysisModal
+                        isOpen={isAIModalOpen}
+                        onClose={() => setIsAIModalOpen(false)}
+                        nodes={nodes}
+                        statusMap={statusMap}
+                        assigneeMap={assigneeMap}
+                        dueDateMap={dueDateMap}
+                        memoMap={memoMap}
+                        projectName={projectName}
+                    />
                 </div>
             </div>
         </HashRouter >
