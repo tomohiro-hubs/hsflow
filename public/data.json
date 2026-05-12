@@ -16,7 +16,12 @@
         "契約",
         "契約"
       ],
-      "links": [],
+      "links": [
+        {
+          "label": "ダウンロードする",
+          "url": "https://eenergio365-my.sharepoint.com/:b:/g/personal/yamazaki_eenergio365_onmicrosoft_com/IQB24x5i9_4mS6HjoSv46WnwAY_9IcFMIfzCGgY6lnjMmDk?e=pTWQgp"
+        }
+      ],
       "inputs": [],
       "outputs": [],
       "position": {
