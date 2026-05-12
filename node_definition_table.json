@@ -109,6 +109,12 @@
       },
       "phase": "工事準備",
       "type": "書類",
+      "links": [
+        {
+          "label": "ダウンロードする",
+          "url": "https://eenergio365-my.sharepoint.com/:b:/g/personal/yamazaki_eenergio365_onmicrosoft_com/IQB24x5i9_4mS6HjoSv46WnwAY_9IcFMIfzCGgY6lnjMmDk?e=pTWQgp"
+        }
+      ],
       "nextMain": "N-012",
       "notes": "着工前に必要"
     },
@@ -630,4 +636,3 @@
     }
   ]
 }
-
